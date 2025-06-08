@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phrasal Verbs Matching Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Phrasal Verbs Quiz</h1>
+            <p>Drag and drop words to match them with their definitions</p>
+        </div>
+
+        <div class="controls">
+            <div class="score">
+                <div>Score: <span class="score-value" id="score">0</span> / 8</div>
+            </div>
+            <div class="completion-message" id="completionMessage">
+                🎉 Congratulations! You've matched all the phrasal verbs correctly!
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="words-section">
+                <div class="section-title">📝 Phrasal Verbs</div>
+                <div id="wordsContainer"></div>
+            </div>
+
+            <div class="definitions-section">
+                <div class="section-title">📖 Definitions</div>
+                <div id="definitionsContainer"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="resetGame()">🔄 Reset Game</button>
+            <button class="btn" onclick="shuffleItems()">🔀 Shuffle</button>
+        </div>
+    </div>
+
+    <script>
+        const phrasalVerbs = [
+            { word: "hold out", definition: "To resist or endure; to offer or extend something" },
+            { word: "set out", definition: "To begin a journey or task; to arrange or display" },
+            { word: "work out", definition: "To exercise; to solve a problem; to develop successfully" },
+            { word: "turn out", definition: "To happen or result in a particular way; to attend an event" },
+            { word: "get over", definition: "To recover from illness or disappointment; to overcome" },
+            { word: "check out", definition: "To investigate or examine; to pay and leave a hotel" },
+            { word: "give out", definition: "To distribute; to stop working; to announce publicly" },
+            { word: "turn off", definition: "To switch off; to cause someone to lose interest" }
+        ];
+
+        let matches = {};
+        let score = 0;
+        let draggedElement = null;
+
+        function initializeGame() {
+            const wordsContainer = document.getElementById('wordsContainer');
+            const definitionsContainer = document.getElementById('definitionsContainer');
+            
+            // Clear containers
+            wordsContainer.innerHTML = '';
+            definitionsContainer.innerHTML = '';
+            
+            // Shuffle arrays for random order
+            const shuffledWords = [...phrasalVerbs].sort(() => Math.random() - 0.5);
+            const shuffledDefinitions = [...phrasalVerbs].sort(() => Math.random() - 0.5);
+            
+            // Create word elements
+            shuffledWords.forEach((item, index) => {
+                const wordDiv = document.createElement('div');
+                wordDiv.className = 'word-item';
+                wordDiv.draggable = true;
+                wordDiv.textContent = item.word;
+                wordDiv.dataset.word = item.word;
+                
+                wordDiv.addEventListener('dragstart', handleDragStart);
+                wordDiv.addEventListener('dragend', handleDragEnd);
+                
+                wordsContainer.appendChild(wordDiv);
+            });
+            
+            // Create definition elements
+            shuffledDefinitions.forEach((item, index) => {
+                const defDiv = document.createElement('div');
+                defDiv.className = 'definition-item';
+                defDiv.textContent = item.definition;
+                defDiv.dataset.word = item.word;
+                
+                defDiv.addEventListener('dragover', handleDragOver);
+                defDiv.addEventListener('drop', handleDrop);
+                defDiv.addEventListener('dragenter', handleDragEnter);
+                defDiv.addEventListener('dragleave', handleDragLeave);
+                
+                definitionsContainer.appendChild(defDiv);
+            });
+            
+            // Reset game state
+            matches = {};
+            score = 0;
+            updateScore();
+            document.getElementById('completionMessage').style.display = 'none';
+        }
+
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedElement = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
+        function handleDragEnter(e) {
+            e.preventDefault();
+            if (!e.target.classList.contains('matched')) {
+                e.target.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            e.target.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.target.classList.remove('drag-over');
+            
+            if (!draggedElement || e.target.classList.contains('matched')) {
+                return;
+            }
+            
+            const draggedWord = draggedElement.dataset.word;
+            const targetWord = e.target.dataset.word;
+            
+            if (draggedWord === targetWord) {
+                // Correct match
+                draggedElement.classList.add('matched');
+                e.target.classList.add('matched');
+                matches[draggedWord] = true;
+                score++;
+                updateScore();
+                
+                // Check if game is complete
+                if (score === phrasalVerbs.length) {
+                    setTimeout(() => {
+                        document.getElementById('completionMessage').style.display = 'block';
+                    }, 500);
+                }
+            } else {
+                // Incorrect match
+                draggedElement.classList.add('incorrect');
+                e.target.classList.add('incorrect');
+                
+                setTimeout(() => {
+                    draggedElement.classList.remove('incorrect');
+                    e.target.classList.remove('incorrect');
+                }, 500);
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        function resetGame() {
+            initializeGame();
+        }
+
+        function shuffleItems() {
+            const wordItems = document.querySelectorAll('.word-item:not(.matched)');
+            const defItems = document.querySelectorAll('.definition-item:not(.matched)');
+            
+            // Shuffle words
+            const wordsArray = Array.from(wordItems);
+            const wordsContainer = document.getElementById('wordsContainer');
+            wordsArray.sort(() => Math.random() - 0.5).forEach(item => {
+                wordsContainer.appendChild(item);
+            });
+            
+            // Shuffle definitions
+            const defsArray = Array.from(defItems);
+            const defsContainer = document.getElementById('definitionsContainer');
+            defsArray.sort(() => Math.random() - 0.5).forEach(item => {
+                defsContainer.appendChild(item);
+            });
+        }
+
+        // Initialize the game when page loads
+        window.addEventListener('load', initializeGame);
+    </script>
+</body>
+</html>

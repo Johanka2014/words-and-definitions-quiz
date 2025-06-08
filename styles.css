@@ -1,0 +1,206 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(45deg, #4a90e2, #7b68ee);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.header p {
+    font-size: 1.2em;
+    opacity: 0.9;
+}
+
+.game-area {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.words-section, .definitions-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.section-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #4a90e2;
+}
+
+.word-item, .definition-item {
+    background: white;
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 12px;
+    cursor: grab;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    user-select: none;
+}
+
+.word-item {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #4a90e2;
+    text-align: center;
+}
+
+.definition-item {
+    color: #555;
+    line-height: 1.5;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.word-item:hover, .definition-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.word-item.dragging {
+    opacity: 0.7;
+    transform: rotate(5deg);
+    cursor: grabbing;
+}
+
+.definition-item.drag-over {
+    border-color: #4a90e2;
+    background: #e3f2fd;
+    transform: scale(1.02);
+}
+
+.matched {
+    background: linear-gradient(45deg, #4caf50, #66bb6a) !important;
+    color: white !important;
+    border-color: #4caf50 !important;
+    cursor: default !important;
+    transform: none !important;
+}
+
+.incorrect {
+    background: linear-gradient(45deg, #f44336, #ef5350) !important;
+    color: white !important;
+    border-color: #f44336 !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.controls {
+    text-align: center;
+    padding: 30px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn {
+    background: linear-gradient(45deg, #4a90e2, #7b68ee);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.score {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.score-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #4a90e2;
+}
+
+.completion-message {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .game-area {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .header h1 {
+        font-size: 2em;
+    }
+    
+    .word-item, .definition-item {
+        padding: 15px;
+    }
+}
